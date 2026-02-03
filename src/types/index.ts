@@ -1,3 +1,5 @@
+import React from 'react';
+
 export type UserRole = "Subscriber" | "Participant" | "Admin" | "SuperAdmin";
 
 export interface User {
@@ -35,5 +37,5 @@ export interface Journey {
 export interface NavItem {
   label: string;
   href: string;
-  icon?: any;
+  icon?: React.ElementType;
 }

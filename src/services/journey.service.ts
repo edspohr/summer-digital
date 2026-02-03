@@ -1,4 +1,4 @@
-import { Journey, JourneyNode } from '@/types';
+import { Journey } from '@/types';
 
 class MockJourneyService {
   private static readonly LATENCY = 1000;

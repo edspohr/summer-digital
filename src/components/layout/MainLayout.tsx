@@ -12,25 +12,30 @@ import {
   LogOut, 
   Menu, 
   X,
-  Users
+  Users,
+  Layout,
+  BarChart2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/useAuthStore';
+import { UserRole } from '@/types';
 
 interface NavItem {
   label: string;
   href: string;
   icon: React.ElementType;
-  adminOnly?: boolean;
+  allowedRoles?: UserRole[];
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Inicio', href: '/dashboard', icon: Home },
-  { label: 'Mi Viaje', href: '/journey', icon: MapIcon },
-  { label: 'Recursos', href: '/resources', icon: BookOpen },
-  { label: 'Mi Perfil', href: '/profile', icon: User },
-  { label: 'Gestión CRM', href: '/crm', icon: Users, adminOnly: true },
+  { label: 'Inicio', href: '/dashboard', icon: Home, allowedRoles: ['Subscriber', 'Participant', 'Admin', 'SuperAdmin'] },
+  { label: 'Mi Viaje', href: '/journey', icon: MapIcon, allowedRoles: ['Participant'] },
+  { label: 'Actividades Abiertas', href: '/open-activities', icon: Layout, allowedRoles: ['Subscriber'] },
+  { label: 'Recursos', href: '/resources', icon: BookOpen, allowedRoles: ['Subscriber', 'Participant'] },
+  { label: 'Mi Perfil', href: '/profile', icon: User, allowedRoles: ['Participant'] }, // Implicitly all usually, but strict per request
+  { label: 'Gestión CRM', href: '/crm', icon: Users, allowedRoles: ['Admin', 'SuperAdmin'] },
+  { label: 'Analítica', href: '/analytics', icon: BarChart2, allowedRoles: ['SuperAdmin'] },
 ];
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -45,9 +50,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   };
 
   // Filter items based on role
-  const filteredNavItems = NAV_ITEMS.filter(item => 
-    !item.adminOnly || (user?.role === 'Admin' || user?.role === 'SuperAdmin')
-  );
+  const filteredNavItems = NAV_ITEMS.filter(item => {
+    if (!user) return false;
+    if (!item.allowedRoles) return true;
+    return item.allowedRoles.includes(user.role);
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">

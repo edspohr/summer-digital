@@ -1,19 +1,56 @@
-import React from 'react';
+import React from "react";
 
 export type UserRole = "Subscriber" | "Participant" | "Admin" | "SuperAdmin";
+export type UserRank = "Semilla" | "Brote" | "Árbol" | "Bosque" | "Oasis";
+
+export interface Medal {
+  id: string;
+  name: string;
+  description: string;
+  iconUrl?: string;
+  dateEarned: string; // ISO Date
+}
+
+export interface Organization {
+  id: string;
+  name: string;
+  type: "Empresa" | "Colegio" | "Universidad" | "ONG" | "Otro";
+  logoUrl?: string;
+  adminIds: string[];
+}
 
 export interface User {
   id: string;
   name: string;
   email: string;
   role: UserRole;
-  oasisScore: number; // 1-100
+  oasisScore: number; // 0-100
+  rank: UserRank;
+  medals: Medal[];
+  organizationId?: string;
   avatarUrl?: string;
   lastConnection: string; // ISO Date
 }
 
-export type NodeType = "video" | "quiz" | "workshop" | "article" | "challenge";
+export type NodeType =
+  | "video"
+  | "quiz"
+  | "workshop"
+  | "article"
+  | "challenge"
+  | "typeform"
+  | "feedback";
 export type NodeStatus = "locked" | "available" | "completed" | "in-progress";
+
+export interface Activity {
+  id: string;
+  title: string;
+  type: "Taller" | "Evento";
+  visibility: "Abierta" | "Cerrada";
+  journeyId: string;
+  description?: string;
+  date?: string; // ISO Date if it has a specific time
+}
 
 export interface JourneyNode {
   id: string;
@@ -24,6 +61,10 @@ export interface JourneyNode {
   x: number; // For map coordinate
   y: number; // For map coordinate
   connections: string[]; // IDs of nodes this node connects TO
+  // Specific data for new types
+  externalUrl?: string; // For typeform
+  videoUrl?: string; // For video
+  videoWatched?: boolean;
 }
 
 export interface Journey {

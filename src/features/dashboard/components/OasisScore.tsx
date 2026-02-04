@@ -1,15 +1,30 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { UserRank } from '@/types';
 
 interface OasisScoreProps {
   score: number; // 0-100
+  rank?: UserRank;
 }
 
-export function OasisScore({ score }: OasisScoreProps) {
+export function OasisScore({ score, rank }: OasisScoreProps) {
   const radius = 60;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (score / 100) * circumference;
+  
+  // State to trigger "pop" animation when score changes
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const timer1 = setTimeout(() => setScale(1.1), 0);
+    const timer2 = setTimeout(() => setScale(1), 300);
+    return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+    };
+  }, [score]);
 
   return (
     <div className="flex flex-col items-center justify-center p-6 bg-white rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden">
@@ -47,11 +62,26 @@ export function OasisScore({ score }: OasisScoreProps) {
               className="text-teal-500"
             />
           </svg>
-          <div className="absolute inset-0 flex items-center justify-center flex-col">
+          <motion.div 
+            animate={{ scale }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="absolute inset-0 flex items-center justify-center flex-col"
+          >
             <span className="text-4xl font-bold text-slate-800">{score}</span>
             <span className="text-xs text-slate-400">/100</span>
-          </div>
+          </motion.div>
         </div>
+        
+        {rank && (
+            <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                key={rank}
+                className="mt-2 px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-semibold uppercase tracking-wide"
+            >
+                Rango: {rank}
+            </motion.div>
+        )}
 
         <p className="mt-4 text-center text-slate-600 text-sm max-w-[200px]">
           Tu impacto como agente de cambio está creciendo.

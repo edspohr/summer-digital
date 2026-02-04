@@ -67,15 +67,23 @@ export function JourneyMap() {
           key={node.id}
           className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
           style={{ left: `${node.x}%`, top: `${node.y}%` }}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.5, type: 'spring' }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ 
+            scale: 1, 
+            opacity: node.status === 'locked' ? 0.5 : 1,
+            filter: node.status === 'locked' ? 'grayscale(100%)' : 'grayscale(0%)'
+          }}
+          transition={{ 
+            duration: 0.5, 
+            type: 'spring',
+            filter: { duration: 1 } // Slower transition for color "desvanecimiento" effect
+          }}
         >
-          <NodeButton node={node} onClick={() => setSelectedNode(node)} />
+          <NodeButton node={node} onClick={() => node.status !== 'locked' && setSelectedNode(node)} />
           {/* Label */}
           <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-32 text-center pointer-events-none">
             <span className={cn(
-              "text-xs font-semibold px-2 py-1 rounded bg-white/80 backdrop-blur-sm shadow-sm",
+              "text-xs font-semibold px-2 py-1 rounded bg-white/80 backdrop-blur-sm shadow-sm transition-colors duration-500",
               node.status === 'locked' ? 'text-slate-400' : 'text-slate-700'
             )}>
               {node.title}
@@ -86,7 +94,7 @@ export function JourneyMap() {
 
       {/* Detail Dialog */}
       <Dialog open={!!selectedNode} onOpenChange={(open) => !open && setSelectedNode(null)}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className={cn("sm:max-w-md", selectedNode?.type === 'typeform' && "sm:max-w-2xl")}>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl text-teal-800">
               {selectedNode?.title}
@@ -97,20 +105,34 @@ export function JourneyMap() {
           </DialogHeader>
           
           <div className="py-6">
-             {/* Mock Content based on type */}
-             <div className="bg-slate-50 p-4 rounded-lg flex items-center justify-center h-32 border border-slate-100 border-dashed">
-                {selectedNode?.type === 'video' && <Play className="h-10 w-10 text-teal-400 opacity-50" />}
-                {selectedNode?.type === 'quiz' && <span className="text-4xl">?</span>}
-                {selectedNode?.type === 'workshop' && <UsersIcon className="h-10 w-10 text-amber-400 opacity-50" />}
-                {selectedNode?.type === 'challenge' && <Star className="h-10 w-10 text-yellow-500 opacity-50" />}
-             </div>
-             <p className="text-sm text-slate-500 mt-4 text-center italic">
-                {selectedNode?.status === 'completed' 
-                  ? "¡Ya completaste esta actividad!" 
-                  : selectedNode?.status === 'locked' 
-                    ? "Completa las actividades anteriores para desbloquear esta."
-                    : "Esta actividad está lista para comenzar."}
-             </p>
+             {selectedNode?.type === 'typeform' ? (
+                <div className="w-full h-[400px] rounded-lg overflow-hidden border border-slate-200">
+                   <iframe 
+                     src={selectedNode.externalUrl || "https://form.typeform.com/to/example"} 
+                     width="100%" 
+                     height="100%" 
+                     frameBorder="0"
+                     title="Typeform"
+                   ></iframe>
+                </div>
+             ) : (
+                 /* Mock Content based on type */
+                 <>
+                     <div className="bg-slate-50 p-4 rounded-lg flex items-center justify-center h-32 border border-slate-100 border-dashed">
+                        {selectedNode?.type === 'video' && <Play className="h-10 w-10 text-teal-400 opacity-50" />}
+                        {selectedNode?.type === 'quiz' && <span className="text-4xl">?</span>}
+                        {selectedNode?.type === 'workshop' && <UsersIcon className="h-10 w-10 text-amber-400 opacity-50" />}
+                        {selectedNode?.type === 'challenge' && <Star className="h-10 w-10 text-yellow-500 opacity-50" />}
+                    </div>
+                     <p className="text-sm text-slate-500 mt-4 text-center italic">
+                        {selectedNode?.status === 'completed' 
+                        ? "¡Ya completaste esta actividad!" 
+                        : selectedNode?.status === 'locked' 
+                            ? "Completa las actividades anteriores para desbloquear esta."
+                            : "Esta actividad está lista para comenzar."}
+                    </p>
+                 </>
+             )}
           </div>
 
           <DialogFooter className="sm:justify-center">

@@ -42,7 +42,7 @@ export function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left Column: Stats & Shortcuts */}
         <div className="space-y-6">
-           <OasisScore score={user.oasisScore} />
+           <OasisScore score={user.oasisScore} rank={user.rank} />
            
            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
               <div className="relative z-10">

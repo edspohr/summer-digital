@@ -41,7 +41,7 @@ export function UserProfileSheet({ user, open, onOpenChange }: UserProfileSheetP
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
+      <SheetContent className="w-[400px] sm:w-[600px] overflow-y-auto">
         <SheetHeader className="pb-6">
           <div className="flex flex-col items-center text-center">
             <Avatar className="h-24 w-24 mb-4 border-4 border-slate-50 shadow-lg">

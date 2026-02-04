@@ -23,7 +23,7 @@ const RESOURCES: Resource[] = [
 ];
 
 export default function ResourcesPage() {
-  const { addPoints } = useAuthStore();
+  const { user, addPoints } = useAuthStore();
   const [readResources, setReadResources] = useState<number[]>([]);
 
   const handleMarkAsRead = (id: number) => {
@@ -35,9 +35,16 @@ export default function ResourcesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Recursos</h1>
-        <p className="text-slate-500">Material de apoyo y documentación para tu desarrollo.</p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Recursos</h1>
+          <p className="text-slate-500">Material de apoyo y documentación para tu desarrollo.</p>
+        </div>
+        {(user?.role === 'Admin' || user?.role === 'SuperAdmin') && (
+            <Button className="bg-slate-900 text-white hover:bg-slate-800">
+                + Nuevo Recurso
+            </Button>
+        )}
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

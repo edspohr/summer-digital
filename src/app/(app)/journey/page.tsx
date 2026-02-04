@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useJourneyStore } from '@/store/useJourneyStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { JourneyMap } from '@/features/journey/components/JourneyMap';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,6 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Play, CheckCircle, Clock } from 'lucide-react';
 import ReactConfetti from 'react-confetti';
-import { useWindowSize } from 'react-use'; // You might need to install this or implement a hook. Using rough hook for now or standard comp.
 
 // Simple window size hook if react-use not available
 function useWindowDimensions() {
@@ -24,6 +24,7 @@ function useWindowDimensions() {
 }
 
 export default function JourneyPage() {
+  const { user } = useAuthStore();
   const { journeys, fetchJourneys, selectedJourneyId, selectJourney, isLoading } = useJourneyStore();
   const { width, height } = useWindowDimensions();
 
@@ -66,9 +67,16 @@ export default function JourneyPage() {
       
       {/* Active Journeys Section */}
       <section>
-        <div className="flex items-center gap-2 mb-4">
-            <Play className="text-teal-500" />
-            <h1 className="text-2xl font-bold text-slate-900">Mis Viajes Activos</h1>
+        <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center gap-2">
+                <Play className="text-teal-500" />
+                <h1 className="text-2xl font-bold text-slate-900">Mis Viajes Activos</h1>
+            </div>
+            { (user?.role === 'Admin' || user?.role === 'SuperAdmin') && (
+                <Button className="bg-slate-900 text-white hover:bg-slate-800">
+                    + Nuevo Viaje
+                </Button>
+            )}
         </div>
         
         {activeJourneys.length > 0 ? (

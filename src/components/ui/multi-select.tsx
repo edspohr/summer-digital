@@ -134,12 +134,14 @@ export function MultiSelect({
       {open && pos && typeof document !== 'undefined' && createPortal(
         <div
           ref={dropdownRef}
+          data-multiselect-dropdown=""
           style={{
             position: 'fixed',
             top: pos.top,
             left: pos.left,
             width: pos.width,
             zIndex: 9999,
+            pointerEvents: 'auto',
           }}
           className="rounded-md border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95 duration-100"
         >

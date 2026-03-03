@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { authService } from '@/services/auth.service';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,7 @@ import {
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
-export default function LoginPage() {
+function LoginContent() {
   const { login, register, requestPasswordRecovery, isLoading, error, user } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -384,5 +384,22 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold text-slate-900">Oasis Digital</h1>
+            <p className="text-slate-500">Cargando...</p>
+          </div>
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }

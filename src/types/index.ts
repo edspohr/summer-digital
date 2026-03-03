@@ -28,6 +28,7 @@ export interface User {
   rank: UserRank;
   medals: Medal[];
   organizationId?: string;
+  organizationSlug?: string;
   avatarUrl?: string;
   lastConnection: string; // ISO Date
 }

@@ -8,6 +8,7 @@ import {
   ApiOrgType,
 } from '@/types/api.types';
 import { ORG_TYPES } from '@/lib/constants/crm-data';
+import { generateSlug } from '@/lib/utils';
 import { OrgDetailDialog } from '@/features/crm/components/OrgDetailDialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -84,12 +85,6 @@ export function OrganizationsTab() {
   useEffect(() => {
     loadOrganizations();
   }, [loadOrganizations]);
-
-  const generateSlug = (name: string) =>
-    name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
 
   const handleNameChange = (name: string) => {
     setFormData((prev) => ({ ...prev, name, slug: generateSlug(name) }));

@@ -33,6 +33,7 @@ export function mapApiUserToUser(apiUser: ApiUser): User {
     rank: calculateRank(oasisScore),
     medals: [],
     organizationId: activeMembership?.organization_id,
+    organizationSlug: activeMembership?.organization_slug || undefined,
     avatarUrl: apiUser.avatar_url || undefined,
     lastConnection: apiUser.updated_at || new Date().toISOString(),
   };

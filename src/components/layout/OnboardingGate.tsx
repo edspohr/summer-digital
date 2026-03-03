@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { JourneyPlayer } from '@/features/journey/components/JourneyPlayer';
 import { JourneyWizard } from '@/features/journey/components/JourneyWizard';
 import { journeyService } from '@/services/journey.service';
+import { SESSION_KEYS } from '@/lib/utils';
 import { Journey } from '@/types';
 import ReactConfetti from 'react-confetti';
 
@@ -62,7 +63,7 @@ export function OnboardingGate({ journeyId, onComplete }: OnboardingGateProps) {
         if (!journey) {
           // Journey still not found after enroll → silent escape to avoid blocking user
           console.warn('[OnboardingGate] Journey not found after enroll, skipping onboarding.');
-          sessionStorage.setItem('onboarding_checked', 'true');
+          sessionStorage.setItem(SESSION_KEYS.ONBOARDING_CHECKED, 'true');
           onComplete();
           return;
         }
@@ -73,7 +74,7 @@ export function OnboardingGate({ journeyId, onComplete }: OnboardingGateProps) {
       } catch (err) {
         // Any network/API error → silent escape
         console.error('[OnboardingGate] Failed to load onboarding journey, skipping.', err);
-        sessionStorage.setItem('onboarding_checked', 'true');
+        sessionStorage.setItem(SESSION_KEYS.ONBOARDING_CHECKED, 'true');
         onComplete();
       }
     }, 2000);
@@ -81,19 +82,29 @@ export function OnboardingGate({ journeyId, onComplete }: OnboardingGateProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
-  // Watch for journey completion
+  // Shared completion handler — triggers confetti then redirects (QR or dashboard).
+  const triggerCompletion = () => {
+    setShowConfetti(true);
+    setPhase('completed');
+    setTimeout(() => {
+      setShowConfetti(false);
+      sessionStorage.setItem(SESSION_KEYS.ONBOARDING_CHECKED, 'true');
+      const qrReturn = sessionStorage.getItem(SESSION_KEYS.QR_RETURN_URL);
+      if (qrReturn) {
+        sessionStorage.removeItem(SESSION_KEYS.QR_RETURN_URL);
+        window.location.href = qrReturn;
+      } else {
+        onComplete();
+      }
+    }, 3000);
+  };
+
+  // Watch for journey completion (store-driven path)
   useEffect(() => {
     if (phase !== 'journey') return;
     const journey = journeys.find(j => j.id === journeyId);
     if (journey?.status === 'completed') {
-      setShowConfetti(true);
-      setPhase('completed');
-      // After confetti (3s) → notify parent (MainLayout will redirect to /dashboard)
-      setTimeout(() => {
-        setShowConfetti(false);
-        sessionStorage.setItem('onboarding_checked', 'true');
-        onComplete();
-      }, 3000);
+      triggerCompletion();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [journeys, phase]);
@@ -103,13 +114,7 @@ export function OnboardingGate({ journeyId, onComplete }: OnboardingGateProps) {
   const handlePlayerBack = () => {
     const j = useJourneyStore.getState().journeys.find(jj => jj.id === journeyId);
     if (j?.status === 'completed' || j?.progress === 100) {
-      setShowConfetti(true);
-      setPhase('completed');
-      setTimeout(() => {
-        setShowConfetti(false);
-        sessionStorage.setItem('onboarding_checked', 'true');
-        onComplete();
-      }, 3000);
+      triggerCompletion();
     }
     // else: no-op — user cannot exit incomplete onboarding
   };

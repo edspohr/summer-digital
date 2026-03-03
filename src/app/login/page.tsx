@@ -15,13 +15,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function LoginPage() {
   const { login, register, requestPasswordRecovery, isLoading, error, user } = useAuthStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [hydrated, setHydrated] = useState(false);
+
+  // Read returnUrl from query params — only allow internal paths (must start with /)
+  const rawReturnUrl = searchParams.get('returnUrl') || '';
+  const returnUrl = rawReturnUrl.startsWith('/') ? rawReturnUrl : '';
 
   // Esperar a que Zustand persist termine de hidratar desde localStorage
   useEffect(() => {
@@ -33,12 +38,12 @@ export default function LoginPage() {
     return unsub;
   }, []);
 
-  // Si ya hay un usuario autenticado, redirigir al dashboard
+  // Si ya hay un usuario autenticado, redirigir al returnUrl o al dashboard
   useEffect(() => {
     if (hydrated && user) {
-      router.push('/dashboard');
+      router.push(returnUrl || '/dashboard');
     }
-  }, [hydrated, user, router]);
+  }, [hydrated, user, router, returnUrl]);
 
   // Login state
   const [loginEmail, setLoginEmail] = useState('');
@@ -62,7 +67,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await login(loginEmail, loginPassword);
-      router.push('/dashboard');
+      router.push(returnUrl || '/dashboard');
     } catch {
       // Error handled by store
     }

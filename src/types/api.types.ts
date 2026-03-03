@@ -31,7 +31,7 @@ export interface ApiPasswordResetRequest {
 
 // --- Organization DTOs ---
 
-export type ApiOrgType = 'community' | 'provider' | 'sponsor' | 'enterprise';
+export type ApiOrgType = 'community' | 'provider' | 'sponsor';
 
 export interface ApiOrganization {
   id: string;
@@ -361,6 +361,7 @@ export interface ApiJourneyOrganizationUnassign {
 
 export interface ApiEnrollmentCreate {
   journey_id: string;
+  event_id?: string | null;
   metadata?: Record<string, unknown>;
 }
 
@@ -368,12 +369,83 @@ export interface ApiEnrollmentResponse {
   id: string;
   user_id: string;
   journey_id: string;
+  event_id?: string | null;
   journey_title?: string | null;
   status: string;
   current_step_index: number;
   progress_percentage: number;
   started_at: string;
   completed_at?: string | null;
+}
+
+// --- Event DTOs ---
+
+export type ApiEventStatus = 'upcoming' | 'live' | 'past' | 'cancelled';
+
+export interface ApiLandingConfig {
+  title?: string | null;
+  welcome_message?: string | null;
+  primary_color: string;
+  background_color: string;
+  show_qr: boolean;
+  custom_logo_url?: string | null;
+}
+
+export interface ApiEvent {
+  id: string;
+  organization_id: string;
+  journey_id?: string | null;
+  name: string;
+  slug: string;
+  description?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  location?: string | null;
+  status: ApiEventStatus;
+  landing_config: ApiLandingConfig;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ApiEventCreate {
+  name: string;
+  slug: string;
+  description?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  location?: string | null;
+  status?: ApiEventStatus;
+  journey_id?: string | null;
+  landing_config?: Partial<ApiLandingConfig>;
+}
+
+export interface ApiEventUpdate {
+  name?: string | null;
+  description?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  location?: string | null;
+  status?: ApiEventStatus | null;
+  journey_id?: string | null;
+  landing_config?: Partial<ApiLandingConfig> | null;
+  is_active?: boolean | null;
+}
+
+export interface ApiPublicEvent {
+  id: string;
+  name: string;
+  slug: string;
+  org_id: string;
+  org_slug: string;
+  org_name: string;
+  description?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  location?: string | null;
+  status: ApiEventStatus;
+  landing_config: ApiLandingConfig;
+  journey_id?: string | null;
 }
 
 export interface ApiStepProgressRead {

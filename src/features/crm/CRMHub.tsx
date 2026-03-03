@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Building2, Activity, Settings2 } from 'lucide-react';
+import { Users, Building2, Activity, Settings2, Calendar } from 'lucide-react';
 import { ContactsTab } from './tabs/ContactsTab';
 import { OrganizationsTab } from './tabs/OrganizationsTab';
 import { ActivityTab } from './tabs/ActivityTab';
 import { FieldOptionsTab } from './tabs/FieldOptionsTab';
+import { EventsTab } from './tabs/EventsTab';
 import { SectionHeader } from '@/components/ui/section-header';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -40,6 +41,10 @@ export function CRMHub() {
             <Building2 className="h-4 w-4" />
             Organizaciones
           </TabsTrigger>
+          <TabsTrigger value="events" className={TAB_TRIGGER}>
+            <Calendar className="h-4 w-4" />
+            Eventos
+          </TabsTrigger>
           <TabsTrigger value="activity" className={TAB_TRIGGER}>
             <Activity className="h-4 w-4" />
             Actividad
@@ -58,6 +63,10 @@ export function CRMHub() {
 
         <TabsContent value="organizations">
           <OrganizationsTab />
+        </TabsContent>
+
+        <TabsContent value="events">
+          <EventsTab />
         </TabsContent>
 
         <TabsContent value="activity">

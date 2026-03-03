@@ -89,6 +89,13 @@ class JourneyService {
     return apiClient.post<ApiEnrollmentResponse>('/journeys/enrollments/', { journey_id: journeyId });
   }
 
+  async enrollInJourneyWithEvent(journeyId: string, eventId: string): Promise<ApiEnrollmentResponse> {
+    return apiClient.post<ApiEnrollmentResponse>('/journeys/enrollments/', {
+      journey_id: journeyId,
+      event_id: eventId,
+    });
+  }
+
   async getMyEnrollments(): Promise<ApiEnrollment[]> {
     return apiClient.get<ApiEnrollment[]>('/journeys/enrollments/me');
   }

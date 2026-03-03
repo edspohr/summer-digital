@@ -6,6 +6,7 @@ import { eventService } from '@/services/event.service';
 import { ApiPublicEvent } from '@/types/api.types';
 import { EVENT_STATUS_CONFIG } from '@/lib/constants/crm-data';
 import { Loader2 } from 'lucide-react';
+import QRCode from 'react-qr-code';
 
 export default function PresentPage() {
   const params = useParams();
@@ -52,10 +53,6 @@ export default function PresentPage() {
   const bgColor = config.background_color || '#0F172A';
   const primaryColor = config.primary_color || '#3B82F6';
   const showQr = config.show_qr !== false;
-  // QR image via Google Charts API (no extra dependency needed)
-  const qrImageUrl = qrJoinUrl
-    ? `https://chart.googleapis.com/chart?chs=400x400&cht=qr&chl=${encodeURIComponent(qrJoinUrl)}&choe=UTF-8`
-    : null;
 
   return (
     <div
@@ -119,23 +116,21 @@ export default function PresentPage() {
         </div>
 
         {/* Right: QR Code */}
-        {showQr && (
+        {showQr && qrJoinUrl && (
           <div className="flex flex-col items-center gap-6">
             <div
               className="p-6 rounded-3xl shadow-2xl"
               style={{ backgroundColor: `${primaryColor}20`, border: `2px solid ${primaryColor}40` }}
             >
-              {qrImageUrl ? (
-                <img
-                  src={qrImageUrl}
-                  alt="QR Code para unirse al evento"
-                  className="w-64 h-64 lg:w-80 lg:h-80 rounded-xl"
+              <div className="w-64 h-64 lg:w-80 lg:h-80 flex items-center justify-center">
+                <QRCode
+                  value={qrJoinUrl}
+                  size={380}
+                  bgColor={bgColor}
+                  fgColor={primaryColor}
+                  style={{ width: '100%', height: '100%' }}
                 />
-              ) : (
-                <div className="w-64 h-64 lg:w-80 lg:h-80 flex items-center justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
-                </div>
-              )}
+              </div>
             </div>
 
             <div className="text-center space-y-1">

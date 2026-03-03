@@ -1,26 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Building2, Activity, Settings2, Calendar } from 'lucide-react';
+import { LayoutDashboard, Users, Building2, Settings } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { ContactsTab } from './tabs/ContactsTab';
 import { OrganizationsTab } from './tabs/OrganizationsTab';
 import { ActivityTab } from './tabs/ActivityTab';
 import { FieldOptionsTab } from './tabs/FieldOptionsTab';
-import { EventsTab } from './tabs/EventsTab';
 import { SectionHeader } from '@/components/ui/section-header';
 import { useAuthStore } from '@/store/useAuthStore';
 
-const TAB_TRIGGER =
-  'rounded-lg gap-2 px-4 py-2 text-sm ' +
-  'data-[state=active]:bg-gradient-to-r data-[state=active]:from-fuchsia-600 data-[state=active]:to-purple-600 ' +
-  'data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=active]:font-medium ' +
-  'text-slate-500 hover:text-slate-700';
+type Section = 'overview' | 'contacts' | 'orgs' | 'config';
 
 export function CRMHub() {
   const { user } = useAuthStore();
   const isAdmin = user?.role === 'Admin' || user?.role === 'SuperAdmin';
-  const [activeTab, setActiveTab] = useState('contacts');
+  const [activeSection, setActiveSection] = useState<Section>('overview');
+
+  const navItems = [
+    { value: 'overview' as Section,  label: 'Inicio',          icon: LayoutDashboard },
+    { value: 'contacts' as Section,  label: 'Contactos',       icon: Users           },
+    { value: 'orgs'     as Section,  label: 'Organizaciones',  icon: Building2       },
+    ...(isAdmin ? [{ value: 'config' as Section, label: 'Configuración', icon: Settings }] : []),
+  ];
 
   return (
     <div className="space-y-6">
@@ -31,54 +33,34 @@ export function CRMHub() {
         className="mb-2"
       />
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="bg-white border border-slate-200 shadow-sm p-1 rounded-xl h-auto">
-          <TabsTrigger value="contacts" className={TAB_TRIGGER}>
-            <Users className="h-4 w-4" />
-            Contactos
-          </TabsTrigger>
-          <TabsTrigger value="organizations" className={TAB_TRIGGER}>
-            <Building2 className="h-4 w-4" />
-            Organizaciones
-          </TabsTrigger>
-          <TabsTrigger value="events" className={TAB_TRIGGER}>
-            <Calendar className="h-4 w-4" />
-            Eventos
-          </TabsTrigger>
-          <TabsTrigger value="activity" className={TAB_TRIGGER}>
-            <Activity className="h-4 w-4" />
-            Actividad
-          </TabsTrigger>
-          {isAdmin && (
-            <TabsTrigger value="field-options" className={TAB_TRIGGER}>
-              <Settings2 className="h-4 w-4" />
-              Opciones de Campo
-            </TabsTrigger>
-          )}
-        </TabsList>
+      <div className="flex h-[calc(100vh-12rem)] rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        {/* Sidebar */}
+        <aside className="w-40 shrink-0 border-r border-slate-100 bg-white flex flex-col gap-1 p-2">
+          {navItems.map(({ value, label, icon: Icon }) => (
+            <button
+              key={value}
+              onClick={() => setActiveSection(value)}
+              className={cn(
+                'flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium w-full text-left transition-colors',
+                activeSection === value
+                  ? 'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100',
+              )}
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              {label}
+            </button>
+          ))}
+        </aside>
 
-        <TabsContent value="contacts">
-          <ContactsTab />
-        </TabsContent>
-
-        <TabsContent value="organizations">
-          <OrganizationsTab />
-        </TabsContent>
-
-        <TabsContent value="events">
-          <EventsTab />
-        </TabsContent>
-
-        <TabsContent value="activity">
-          <ActivityTab />
-        </TabsContent>
-
-        {isAdmin && (
-          <TabsContent value="field-options">
-            <FieldOptionsTab />
-          </TabsContent>
-        )}
-      </Tabs>
+        {/* Main content */}
+        <main className="flex-1 overflow-auto p-4 bg-slate-50">
+          {activeSection === 'overview' && <ActivityTab orgId={user?.organizationId} />}
+          {activeSection === 'contacts' && <ContactsTab />}
+          {activeSection === 'orgs'     && <OrganizationsTab />}
+          {activeSection === 'config'   && isAdmin && <FieldOptionsTab />}
+        </main>
+      </div>
     </div>
   );
 }

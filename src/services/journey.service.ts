@@ -96,6 +96,12 @@ class JourneyService {
     });
   }
 
+  async updateEnrollmentEvent(journeyId: string, eventId: string): Promise<ApiEnrollmentResponse> {
+    return apiClient.patch<ApiEnrollmentResponse>(`/journeys/enrollments/by-journey/${journeyId}/event`, {
+      event_id: eventId,
+    });
+  }
+
   async getMyEnrollments(): Promise<ApiEnrollment[]> {
     return apiClient.get<ApiEnrollment[]>('/journeys/enrollments/me');
   }

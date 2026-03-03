@@ -387,14 +387,23 @@ export interface ApiLandingConfig {
   welcome_message?: string | null;
   primary_color: string;
   background_color: string;
+  background_end_color?: string | null;
+  gradient_direction?: string | null;
+  background_image_url?: string | null;
+  text_color?: string | null;
   show_qr: boolean;
   custom_logo_url?: string | null;
+}
+
+export interface ApiJourneySummary {
+  id: string;
+  title: string;
 }
 
 export interface ApiEvent {
   id: string;
   organization_id: string;
-  journey_id?: string | null;
+  journey_ids: string[];
   name: string;
   slug: string;
   description?: string | null;
@@ -404,6 +413,8 @@ export interface ApiEvent {
   status: ApiEventStatus;
   landing_config: ApiLandingConfig;
   is_active: boolean;
+  notes?: string | null;
+  expected_participants?: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -416,8 +427,10 @@ export interface ApiEventCreate {
   end_date?: string | null;
   location?: string | null;
   status?: ApiEventStatus;
-  journey_id?: string | null;
+  journey_ids?: string[];
   landing_config?: Partial<ApiLandingConfig>;
+  notes?: string | null;
+  expected_participants?: number | null;
 }
 
 export interface ApiEventUpdate {
@@ -427,9 +440,11 @@ export interface ApiEventUpdate {
   end_date?: string | null;
   location?: string | null;
   status?: ApiEventStatus | null;
-  journey_id?: string | null;
+  journey_ids?: string[] | null;
   landing_config?: Partial<ApiLandingConfig> | null;
   is_active?: boolean | null;
+  notes?: string | null;
+  expected_participants?: number | null;
 }
 
 export interface ApiPublicEvent {
@@ -445,7 +460,8 @@ export interface ApiPublicEvent {
   location?: string | null;
   status: ApiEventStatus;
   landing_config: ApiLandingConfig;
-  journey_id?: string | null;
+  journey_ids: string[];
+  journey_summaries: ApiJourneySummary[];
 }
 
 export interface ApiStepProgressRead {
@@ -780,6 +796,23 @@ export interface ApiCrmStats {
   in_progress_tasks: number;
   completed_tasks: number;
   total_notes: number;
+}
+
+// --- Contact Event Participation ---
+
+export interface ApiContactEventParticipation {
+  enrollment_id: string;
+  enrollment_status: string;
+  enrolled_at: string;
+  event_id: string;
+  event_name: string;
+  event_slug: string;
+  event_status: ApiEventStatus;
+  event_start_date?: string;
+  event_location?: string;
+  org_id: string;
+  org_name: string;
+  org_slug: string;
 }
 
 // --- Resource DTOs ---

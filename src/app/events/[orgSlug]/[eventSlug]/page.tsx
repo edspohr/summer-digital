@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import QRCode from 'react-qr-code';
@@ -12,7 +12,7 @@ import { ApiLandingConfig, ApiPublicEvent } from '@/types/api.types';
 import { EVENT_STATUS_CONFIG } from '@/lib/constants/crm-data';
 import { SESSION_KEYS } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, MapPin, Calendar, ArrowRight, Sparkles } from 'lucide-react';
+import { Loader2, MapPin, Calendar, ArrowRight, Sparkles, Check, Link2 } from 'lucide-react';
 import React from 'react';
 
 // Dark-mode variants for the public QR landing page
@@ -58,12 +58,29 @@ export default function QRLandingPage() {
   const [joiningId, setJoiningId] = useState<string | null>(null);
   const [joinMessage, setJoinMessage] = useState<string | null>(null);
   const [qrUrl, setQrUrl] = useState('');
+  const [autoJoin, setAutoJoin] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const autoJoinedRef = useRef(false);
 
   const currentPath = `/events/${orgSlug}/${eventSlug}`;
+  const joinPath = `${currentPath}?action=join`;
 
   useEffect(() => {
-    setQrUrl(`${window.location.origin}/login`);
+    setQrUrl(`${window.location.origin}/login?returnUrl=${encodeURIComponent(joinPath)}`);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setAutoJoin(new URLSearchParams(window.location.search).get('action') === 'join');
+  }, []);
+
+  useEffect(() => {
+    if (!autoJoin || !user || !event || loading || autoJoinedRef.current) return;
+    if (event.journey_ids.length === 1) {
+      autoJoinedRef.current = true;
+      handleJoin(event.journey_ids[0]);
+    }
+    // Multi-journey: el usuario elige — se renderiza el selector normal
+  }, [autoJoin, user, event, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -257,10 +274,24 @@ export default function QRLandingPage() {
             </div>
           </motion.div>
 
-          {/* Instrucción de escaneo */}
-          <p className="text-center text-xs mb-6" style={{ color: textColor, opacity: 0.45 }}>
-            Escanea para unirte al evento
-          </p>
+          {/* Instrucción de escaneo + botón copiar enlace */}
+          <div className="flex flex-col items-center gap-2 mb-6">
+            <p className="text-center text-xs" style={{ color: textColor, opacity: 0.45 }}>
+              Escanea para unirte al evento
+            </p>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(`${window.location.origin}${joinPath}`);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors"
+              style={{ color: textColor }}
+            >
+              {copied ? <Check className="h-3 w-3" /> : <Link2 className="h-3 w-3" />}
+              {copied ? 'Copiado' : 'Copiar enlace de invitación'}
+            </button>
+          </div>
 
           {/* Meta info — solo si hay datos; sin card wrapper vacía */}
           {(event.start_date || event.location) && (

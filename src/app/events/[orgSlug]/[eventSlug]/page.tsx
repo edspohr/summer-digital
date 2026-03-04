@@ -98,8 +98,8 @@ export default function QRLandingPage() {
 
   const handleJoin = async (journeyId: string) => {
     if (!user) {
-      sessionStorage.setItem(SESSION_KEYS.QR_RETURN_URL, currentPath);
-      router.push(`/login?returnUrl=${encodeURIComponent(currentPath)}`);
+      sessionStorage.setItem(SESSION_KEYS.QR_RETURN_URL, joinPath);
+      router.push(`/login?returnUrl=${encodeURIComponent(joinPath)}`);
       return;
     }
 
@@ -108,7 +108,7 @@ export default function QRLandingPage() {
     try {
       const onboardingCheck = await journeyService.checkOnboarding();
       if (onboardingCheck.should_show) {
-        sessionStorage.setItem(SESSION_KEYS.QR_RETURN_URL, currentPath);
+        sessionStorage.setItem(SESSION_KEYS.QR_RETURN_URL, joinPath);
         router.push('/dashboard');
         return;
       }

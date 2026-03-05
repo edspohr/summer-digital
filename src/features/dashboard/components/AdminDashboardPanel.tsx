@@ -8,6 +8,7 @@ import { User } from '@/types';
 import { crmService } from '@/services/crm.service';
 import { adminService } from '@/services/admin.service';
 import { resourceService } from '@/services/resource.service';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface AdminDashboardPanelProps {
   user: User;
@@ -134,7 +135,7 @@ export function AdminDashboardPanel({ user }: AdminDashboardPanelProps) {
               </div>
               <div>
                 {loading ? (
-                  <div className="h-9 w-16 bg-slate-200 rounded animate-pulse mb-1" />
+                  <Skeleton className="h-9 w-16 mb-1" />
                 ) : (
                   <motion.p
                     initial={{ opacity: 0, y: 8 }}

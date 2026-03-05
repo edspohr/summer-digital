@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -405,24 +406,28 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <div className="h-1 bg-gradient-to-r from-sky-500 via-teal-400 to-cyan-400 sticky top-0 z-[51]" />
       )}
 
-      {/* ── Unified Topbar ── */}
-      <header className={cn(
-        'sticky top-0 z-50 h-14 flex items-center gap-4 px-4 md:px-6 transition-all duration-300',
-        isParticipantTheme
-          ? 'bg-white border-b border-sky-100 shadow-sm'
-          : 'bg-neutral-950 border-b border-white/5'
-      )}>
-
-        {/* Logo */}
-        <Link
-          href="/dashboard"
-          className={cn(
-            'font-bold text-lg tracking-tight shrink-0 mr-2 transition-colors duration-300',
-            isParticipantTheme ? 'text-sky-700' : 'text-white'
-          )}
-        >
-          Oasis Digital
-        </Link>
+        <header className={cn(
+          'sticky top-0 z-50 h-16 flex items-center gap-4 px-4 md:px-6 transition-all duration-500',
+          isParticipantTheme
+            ? 'oasis-glass border-b border-sky-100/50'
+            : 'oasis-glass-dark'
+        )}>
+  
+          {/* Logo */}
+          <Link
+            href="/dashboard"
+            className="shrink-0 mr-4 flex items-center"
+          >
+            <Image
+              src="/2.svg"
+              alt="Oasis Digital"
+              width={180}
+              height={48}
+              priority
+              className="h-12 transition-all duration-300"
+              style={{ width: 'auto' }}
+            />
+          </Link>
 
         {/* Participant mode badge — only for admin switching modes */}
         {isParticipantMode && (

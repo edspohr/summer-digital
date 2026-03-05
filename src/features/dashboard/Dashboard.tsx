@@ -9,6 +9,7 @@ import { Pencil } from 'lucide-react';
 import { ParticipantJourneysSection } from './components/ParticipantJourneysSection';
 import { ResourcesFeedWidget } from './components/ResourcesFeedWidget';
 import { AdminDashboardPanel } from './components/AdminDashboardPanel';
+import { Skeleton } from '@/components/ui/skeleton';
 
 /* ─── Level progress from real API data ──────────────── */
 function getLevelProgress(s: ApiUserPointsSummary) {
@@ -141,12 +142,11 @@ export function Dashboard() {
                     )}
                   </>
                 ) : (
-                  <>
-                    <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full w-1/4 bg-slate-200 animate-pulse rounded-full" />
-                    </div>
-                    <p className="text-xs text-slate-300 mt-1.5">Cargando progreso...</p>
-                  </>
+                  <div className="space-y-3">
+                    <Skeleton className="h-2.5 w-full max-w-[200px]" />
+                    <Skeleton className="h-2.5 w-full" />
+                    <Skeleton className="h-4 w-1/4" />
+                  </div>
                 )}
               </div>
 

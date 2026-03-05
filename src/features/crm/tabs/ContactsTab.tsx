@@ -35,10 +35,10 @@ const STATUS_OPTIONS: { value: ApiAccountStatus; label: string }[] = [
 ];
 
 const STATUS_COLORS: Record<ApiAccountStatus, string> = {
-  active: 'bg-green-100 text-green-800',
-  suspended: 'bg-red-100 text-red-800',
-  pending_verification: 'bg-yellow-100 text-yellow-800',
-  deleted: 'bg-slate-100 text-slate-800',
+  active: 'bg-emerald-50 text-emerald-700 border-emerald-100/50',
+  suspended: 'bg-rose-50 text-rose-700 border-rose-100/50',
+  pending_verification: 'bg-amber-50 text-amber-700 border-amber-100/50',
+  deleted: 'bg-slate-50 text-slate-700 border-slate-100/50',
 };
 
 const PAGE_SIZE = 20;

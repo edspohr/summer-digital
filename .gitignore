@@ -44,3 +44,7 @@ next-env.d.ts
 openapi_oasis_backend.json
 error-component.json
 rewards_profile.json
+
+# Referencia para la IA
+_legacy_reference/
+.env.local

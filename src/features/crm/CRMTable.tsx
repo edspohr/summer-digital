@@ -121,7 +121,20 @@ export function CRMTable() {
                 <TableHead className="text-right">Última Conexión</TableHead>
             </TableRow>
             </TableHeader>
-            <TableBody>
+            <motion.tbody 
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.1 }}
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.05
+                  }
+                }
+              }}
+            >
             {isLoading ? (
                 // Skeleton Rows
                 Array.from({ length: 5 }).map((_, i) => (
@@ -139,15 +152,18 @@ export function CRMTable() {
                 <motion.tr 
                     key={user.id}
                     layoutId={`row-${user.id}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    variants={{
+                      hidden: { opacity: 0, y: 15 },
+                      show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 25 } }
+                    }}
                     className="cursor-pointer hover:bg-slate-50/80 transition-colors border-b last:border-0 table-row"
                     onClick={() => setSelectedUser(user)}
-                    whileHover={{ backgroundColor: "rgba(248,250,252,1)" }}
+                    whileHover={{ backgroundColor: "rgba(248,250,252,1)", scale: 1.01, zIndex: 1 }}
+                    whileTap={{ scale: 0.995 }}
                 >
                     <TableCell className="font-medium">
                         <div className="flex items-center gap-3">
-                            <Avatar className="h-8 w-8">
+                            <Avatar className="h-8 w-8 ring-2 ring-oasis-blue/30">
                                 <AvatarImage src={`https://i.pravatar.cc/150?u=${user.id}`} />
                                 <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                             </Avatar>
@@ -190,7 +206,7 @@ export function CRMTable() {
                     </TableCell>
                 </TableRow>
             )}
-            </TableBody>
+            </motion.tbody>
         </Table>
         </div>
 

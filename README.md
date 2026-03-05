@@ -106,8 +106,12 @@ Integrar el Auth de Supabase en `useAuthStore.ts` para reemplazar el login simul
 
 ---
 
-## 🎨 Decisiones de Diseño
+## 💎 Oasis Premium Overhaul
 
-- **Paleta de Colores**: Slate (Grises neutros) y Teal (Acento principal), alineados con la identidad de Oasis.
-- **Tipografía**: Geist Sans y Mono.
-- **Experiencia de Usuario**: Enfoque en micro-interacciones y feedback visual (confetti al completar viajes, barras de progreso animadas).
+Estilos & Performance: Migración completa a Tailwind CSS v4. Optimización de Core Web Vitals (LCP/CLS) mediante el uso de next/image y Skeleton Loaders personalizados.
+
+UI/UX: Implementación de identidad visual Oasis (Gradients, Glassmorphism, Horizon Typography).
+
+Interactividad: Sistema de animaciones con Framer Motion (Staggered tables, Kanban transitions, Journey glows).
+
+Funcionalidad: Recuperación del Pipeline de CRM y sistema de Gamificación inmersivo.

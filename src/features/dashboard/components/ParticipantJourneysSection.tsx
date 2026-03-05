@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Map, ArrowRight, Compass, Plus, Loader2 } from 'lucide-react';
@@ -11,6 +12,7 @@ import { organizationService } from '@/services/organization.service';
 import { ApiJourneyRead } from '@/types/api.types';
 import { JourneyCardCompact } from '@/features/journey/components/JourneyCard';
 import { categoryGradient } from '@/features/journey/components/JourneyCard';
+import { Skeleton } from '@/components/ui/skeleton';
 
 /* ─── Section ────────────────────────────────────────── */
 export function ParticipantJourneysSection() {
@@ -61,7 +63,11 @@ export function ParticipantJourneysSection() {
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
       {/* ── Banner motivacional ─────────────────────────── */}
-      <div className="bg-gradient-to-r from-sky-400 via-teal-400 to-cyan-400 px-5 py-4">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-sky-400 via-teal-400 to-cyan-400 px-5 py-4"
+      >
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="font-bold text-white text-sm leading-tight">
@@ -76,14 +82,18 @@ export function ParticipantJourneysSection() {
             </p>
           </div>
           <Link href="/journey" className="shrink-0">
-            <button className="flex items-center gap-1.5 bg-white text-sky-600
+            <motion.button
+              whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.9)' }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-1.5 bg-white text-sky-600
                                hover:bg-sky-50 shadow-sm border border-white/60
-                               text-xs font-bold px-3 py-1.5 rounded-xl transition-colors">
+                               text-xs font-bold px-3 py-1.5 rounded-xl transition-colors"
+            >
               Ver todo <ArrowRight size={12} />
-            </button>
+            </motion.button>
           </Link>
         </div>
-      </div>
+      </motion.div>
 
       {/* ── Title row ───────────────────────────────────── */}
       <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-slate-100">
@@ -110,13 +120,13 @@ export function ParticipantJourneysSection() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2].map(i => (
-              <div key={i} className="bg-slate-50 rounded-2xl p-4 flex items-center gap-4 animate-pulse">
+              <div key={i} className="bg-slate-50/50 rounded-2xl p-4 flex items-center gap-4">
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-slate-200 rounded w-1/4" />
-                  <div className="h-4 bg-slate-200 rounded w-3/4" />
-                  <div className="h-2 bg-slate-200 rounded w-full" />
+                  <Skeleton className="h-3 w-1/4" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-2 w-full" />
                 </div>
-                <div className="h-8 w-20 bg-slate-200 rounded-xl shrink-0" />
+                <Skeleton className="h-8 w-20 rounded-xl shrink-0" />
               </div>
             ))}
           </div>
@@ -134,23 +144,35 @@ export function ParticipantJourneysSection() {
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
-            {displayJourneys.map(j => (
-              <JourneyCardCompact
-                key={j.id}
-                journey={j}
-                onContinue={() => router.push('/journey/' + j.id)}
-              />
-            ))}
+          <motion.div layout className="flex flex-col gap-3">
+            <AnimatePresence mode="popLayout">
+              {displayJourneys.map(j => (
+                <motion.div
+                  key={j.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  layout
+                >
+                  <JourneyCardCompact
+                    journey={j}
+                    onContinue={() => router.push('/journey/' + j.id)}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
             {extraCount > 0 && (
               <Link href="/journey">
-                <div className="text-center py-2 text-xs font-semibold text-sky-600
-                                hover:text-sky-700 transition-colors cursor-pointer">
+                <motion.div
+                  whileHover={{ x: 5 }}
+                  className="text-center py-2 text-xs font-semibold text-sky-600
+                                  hover:text-sky-700 transition-colors cursor-pointer"
+                >
                   Ver {extraCount} journey{extraCount > 1 ? 's' : ''} más →
-                </div>
+                </motion.div>
               </Link>
             )}
-          </div>
+          </motion.div>
         )}
 
         {/* ── Disponibles para ti ──────────────────────── */}

@@ -145,7 +145,7 @@ export function JourneyPreviewMap({ initialJourney, onBack }: JourneyPreviewMapP
       {/* Preview Banner */}
       <div className="bg-purple-50 border border-purple-200 rounded-lg px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-purple-500" />
           <span className="text-sm font-medium text-purple-800">
             Modo Vista Previa — Los cambios no se guardan
           </span>

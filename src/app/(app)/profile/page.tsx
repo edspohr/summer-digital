@@ -16,6 +16,8 @@ import {
   User, Shield, Mail, Building2, Award, Calendar, TrendingUp, Star,
   Phone, MapPin, GraduationCap, Briefcase, Pencil, Save, Loader2, Camera,
 } from "lucide-react";
+import Image from 'next/image';
+import { Skeleton } from '@/components/ui/skeleton';
 import { LocationSelector, getCountryName, getStateName } from '@/features/crm/components/LocationSelector';
 import { toast } from 'sonner';
 
@@ -253,8 +255,12 @@ export default function ProfilePage() {
                 {uploadingAvatar ? (
                   <Loader2 className="h-8 w-8 text-white animate-spin" />
                 ) : user.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                  <Image
+                    src={user.avatarUrl}
+                    alt={user.name}
+                    fill
+                    className="object-cover"
+                  />
                 ) : (
                   initials
                 )}
@@ -543,9 +549,9 @@ export default function ProfilePage() {
 
           {isLoadingGamification ? (
             <div className="space-y-4">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-4 bg-slate-100 rounded animate-pulse" />
-              ))}
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
             </div>
           ) : (
             <div className="space-y-6">

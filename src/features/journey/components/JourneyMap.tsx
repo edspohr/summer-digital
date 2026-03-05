@@ -409,8 +409,21 @@ function NodeButton({ node, onClick }: { node: JourneyNode; onClick: () => void 
 
   return (
     <motion.button
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.15, rotate: [0, -5, 5, 0] }}
+      whileTap={{ scale: 0.9 }}
+      animate={node.status === 'in-progress' ? {
+        scale: [1, 1.08, 1],
+        boxShadow: [
+          "0 0 0 0px rgba(251, 191, 36, 0.4)",
+          "0 0 0 10px rgba(251, 191, 36, 0)",
+          "0 0 0 0px rgba(251, 191, 36, 0)"
+        ]
+      } : {}}
+      transition={node.status === 'in-progress' ? {
+        duration: 2,
+        repeat: Infinity,
+        ease: "easeInOut"
+      } : {}}
       onClick={onClick}
       className={cn(
         "w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-colors z-20",

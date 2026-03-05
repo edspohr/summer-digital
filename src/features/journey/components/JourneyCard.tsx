@@ -66,9 +66,22 @@ export function JourneyCardCompact({
   const borderCls = CAT_BORDER_PARTICIPANT[key] ?? 'border-l-slate-200';
 
   return (
-    <div className={`bg-white border border-slate-100 border-l-4 ${borderCls}
+    <motion.div
+      whileHover={{ 
+        y: -4, 
+        boxShadow: key === 'bienestar' 
+          ? '0 20px 25px -5px rgba(141, 212, 218, 0.2), 0 10px 10px -5px rgba(141, 212, 218, 0.1)'
+          : key === 'liderazgo'
+          ? '0 20px 25px -5px rgba(244, 196, 220, 0.2), 0 10px 10px -5px rgba(244, 196, 220, 0.1)'
+          : '0 20px 25px -5px rgba(146, 173, 239, 0.2), 0 10px 10px -5px rgba(146, 173, 239, 0.1)'
+      }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      className={`bg-white border border-slate-100 border-l-4 ${borderCls}
                      rounded-2xl p-4 flex items-center gap-4
-                     hover:shadow-sm hover:border-slate-200 transition-all`}>
+                     cursor-pointer hover:border-slate-200 transition-all`}
+      onClick={onContinue}
+    >
       {/* Content */}
       <div className="flex-1 min-w-0 space-y-2">
         <div className="flex items-center gap-2">
@@ -102,22 +115,24 @@ export function JourneyCardCompact({
       </div>
 
       {/* CTA */}
-      {isDone ? (
-        <div className="shrink-0 text-xs font-semibold text-emerald-600
-                        bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-xl">
-          ✓ Listo
-        </div>
-      ) : (
-        <button
-          onClick={onContinue}
-          className="shrink-0 flex items-center gap-1 text-xs font-bold
-                     text-sky-600 bg-sky-50 border border-sky-100
-                     px-3 py-1.5 rounded-xl hover:bg-sky-100 transition-colors"
-        >
-          Continuar <ArrowRight size={12} />
-        </button>
-      )}
-    </div>
+      <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+        {isDone ? (
+          <div className="shrink-0 text-xs font-semibold text-emerald-600
+                          bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-xl">
+            ✓ Listo
+          </div>
+        ) : (
+          <button
+            onClick={onContinue}
+            className="shrink-0 flex items-center gap-1 text-xs font-bold
+                       text-sky-600 bg-sky-50 border border-sky-100
+                       px-3 py-1.5 rounded-xl hover:bg-sky-100 transition-colors"
+          >
+            Continuar <ArrowRight size={12} />
+          </button>
+        )}
+      </motion.div>
+    </motion.div>
   );
 }
 
